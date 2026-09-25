@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Smart ABHA Health Record System{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#0d9488;--primary-dark:#0f766e;--soft:#f0fdfa;--bg:#f8fafc;--surface:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--danger:#dc2626;--radius:14px;--shadow:0 1px 3px rgba(0,0,0,.04);--shadow-md:0 6px 20px rgba(0,0,0,.06)}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.navbar{background:#fff;border-bottom:1px solid var(--border);padding:.7rem 1.25rem;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.nav-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;position:relative}
+.brand{display:flex;align-items:center;gap:.5rem;font-weight:700;font-size:1.05rem;color:var(--primary-dark)}
+.brand small{display:block;font-size:.68rem;font-weight:500;color:var(--muted);margin-top:-1px}
+.brand-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#14b8a6,#0d9488);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.05rem}
+.nav-links{display:flex;list-style:none;gap:.05rem;align-items:center;flex-wrap:wrap}
+.nav-links a{font-size:.84rem;font-weight:500;color:var(--muted);padding:.4rem .72rem;border-radius:8px;transition:.15s}
+.nav-links a:hover{color:var(--primary-dark);background:var(--soft)}
+.nav-actions{display:flex;gap:.45rem;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.35rem;padding:.5rem 1.1rem;font-size:.85rem;font-weight:600;border-radius:10px;border:none;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-outline{background:#fff;color:var(--text);border:1px solid var(--border)}.btn-outline:hover{border-color:var(--primary);color:var(--primary-dark);background:var(--soft)}
+.btn-sm{padding:.35rem .75rem;font-size:.8rem}
+.menu-btn{display:none;background:#fff;border:1px solid var(--border);border-radius:8px;width:38px;height:38px;font-size:1.2rem;cursor:pointer;color:var(--text);line-height:1}
+.mobile-menu{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-md);min-width:240px;padding:.55rem;z-index:200}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:block;padding:.7rem .95rem;font-size:.9rem;font-weight:500;color:var(--text);border-radius:10px}
+.mobile-menu a:hover{background:var(--soft);color:var(--primary-dark)}
+.mobile-menu .sep{height:1px;background:var(--border);margin:.4rem .4rem}
+.main{flex:1;max-width:1140px;width:100%;margin:0 auto;padding:1.5rem 1.25rem 2.75rem}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.card-header{padding:.9rem 1.2rem;font-weight:600;font-size:.92rem;border-bottom:1px solid var(--border);background:#fafbfc}
+.card-body{padding:1.2rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;box-shadow:var(--shadow)}
+.stat-card .label{font-size:.7rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.3rem}
+.stat-card .value{font-size:1.6rem;font-weight:700;letter-spacing:-.02em}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.8rem;font-weight:600;margin-bottom:.3rem}
+.form-control{width:100%;padding:.55rem .85rem;font-size:.9rem;border:1px solid var(--border);border-radius:10px;font-family:inherit;background:#fff}
+.form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(13,148,136,.12)}
+.alert{padding:.8rem 1.1rem;border-radius:10px;margin-bottom:1.1rem;font-size:.875rem;font-weight:500}
+.alert-success{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.alert-error,.alert-danger{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+th,td{padding:.7rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+th{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);background:#fafbfc}
+.badge{display:inline-block;background:var(--soft);color:var(--primary-dark);font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:999px;text-transform:capitalize}
+.page-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap}
+.page-header h1{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.page-header .sub{font-size:.875rem;color:var(--muted);margin-top:.15rem}
+.empty{text-align:center;padding:2.25rem 1rem;color:var(--muted);background:#fff;border:1px dashed var(--border);border-radius:14px}
+.user-chip{display:flex;align-items:center;gap:.45rem;font-size:.8rem;margin-left:.35rem;padding-left:.7rem;border-left:1px solid var(--border)}
+.site-footer{background:#0f172a;color:#94a3b8;padding:2.5rem 1.25rem 1.25rem;margin-top:auto}
+.footer-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:2rem}
+.footer-brand{color:#fff;font-weight:700;font-size:1.05rem;margin-bottom:.4rem}
+.footer-brand span{display:block;font-size:.75rem;font-weight:400;color:#64748b}
+.footer-desc{font-size:.82rem;line-height:1.55;margin-top:.4rem}
+.footer-col h4{color:#fff;font-size:.85rem;font-weight:600;margin-bottom:.7rem}
+.footer-col a{display:block;color:#94a3b8;font-size:.82rem;margin-bottom:.4rem;transition:.15s}
+.footer-col a:hover{color:#2dd4bf}
+.footer-bottom{max-width:1140px;margin:1.75rem auto 0;padding-top:1.1rem;border-top:1px solid #1e293b;text-align:center;font-size:.75rem;color:#64748b}
+@media(max-width:860px){
+  .nav-links.desktop,.nav-actions.desktop{display:none}
+  .menu-btn{display:flex;align-items:center;justify-content:center}
+  .footer-inner{grid-template-columns:1fr}
+}
+{% block extra_css %}{% endblock %}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="{{ url_for('index') }}" class="brand">
+      <div class="brand-icon">💚</div>
+      <div>Smart ABHA<small>Health Record System</small></div>
+    </a>
+    {% if current_user.is_authenticated %}
+    <ul class="nav-links desktop">
+      <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('maternal_list') }}">Maternal</a></li>
+      <li><a href="{{ url_for('child_list') }}">Child</a></li>
+      <li><a href="{{ url_for('vaccination_list') }}">Vaccinations</a></li>
+      <li><a href="{{ url_for('checkup_list') }}">Checkups</a></li>
+      <li><a href="{{ url_for('growth_list') }}">Growth</a></li>
+      <li class="user-chip"><span>{{ current_user.name }}</span><span class="badge">{{ current_user.role.value }}</span>
+        <a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+    <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu">⋮</button>
+    <div class="mobile-menu" id="mmenu">
+      <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+      <a href="{{ url_for('maternal_list') }}">🤰 Maternal Records</a>
+      <a href="{{ url_for('child_list') }}">👶 Child Records</a>
+      <a href="{{ url_for('vaccination_list') }}">💉 Vaccinations</a>
+      <a href="{{ url_for('checkup_list') }}">🩺 Checkups</a>
+      <a href="{{ url_for('growth_list') }}">📈 Growth</a>
+      <div class="sep"></div>
+      <a href="{{ url_for('logout') }}">🚪 Logout</a>
+    </div>
+    {% else %}
+    <ul class="nav-links desktop">
+      <li><a href="{{ url_for('index') }}#home">Home</a></li>
+      <li><a href="{{ url_for('index') }}#about">About</a></li>
+      <li><a href="{{ url_for('index') }}#features">Features</a></li>
+      <li><a href="{{ url_for('index') }}#how">How It Works</a></li>
+      <li><a href="{{ url_for('index') }}#users">Who It Serves</a></li>
+      <li><a href="{{ url_for('contact') }}">Contact</a></li>
+    </ul>
+    <div class="nav-actions desktop">
+      <a href="{{ url_for('login') }}" class="btn btn-outline btn-sm">Login</a>
+      <a href="{{ url_for('register') }}" class="btn btn-primary btn-sm">Register</a>
+    </div>
+    <button type="button" class="menu-btn" id="menuBtn" aria-label="Menu">⋮</button>
+    <div class="mobile-menu" id="mmenu">
+      <a href="{{ url_for('index') }}#home">🏠 Home</a>
+      <a href="{{ url_for('index') }}#about">ℹ️ About</a>
+      <a href="{{ url_for('index') }}#features">⭐ Features</a>
+      <a href="{{ url_for('index') }}#how">🔄 How It Works</a>
+      <a href="{{ url_for('index') }}#users">👩‍👧 Who It Serves</a>
+      <a href="{{ url_for('contact') }}">📞 Contact</a>
+      <div class="sep"></div>
+      <a href="{{ url_for('login') }}">🔐 Login</a>
+      <a href="{{ url_for('register') }}">📝 Register</a>
+    </div>
+    {% endif %}
+  </div>
+</nav>
+<main class="main">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for c,m in messages %}<div class="alert alert-{{ c }}">{{ m }}</div>{% endfor %}{% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Smart ABHA<span>Health Record System</span></div>
+      <p class="footer-desc">A unified digital platform for maternal and child health records — secure, organized, and accessible for better continuity of care.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="{{ url_for('index') }}#home">Home</a>
+      <a href="{{ url_for('index') }}#about">About</a>
+      <a href="{{ url_for('index') }}#features">Features</a>
+      <a href="{{ url_for('index') }}#how">How It Works</a>
+      <a href="{{ url_for('index') }}#users">Who It Serves</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="mailto:support@smartabha.com">support@smartabha.com</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Smart ABHA Health Record System. All rights reserved.</div>
+</footer>
+<script>
+(function(){
+  var btn=document.getElementById('menuBtn');
+  var menu=document.getElementById('mmenu');
+  if(btn&&menu){
+    btn.addEventListener('click',function(e){e.stopPropagation();menu.classList.toggle('open');});
+    document.addEventListener('click',function(e){
+      if(!menu.contains(e.target)&&e.target!==btn) menu.classList.remove('open');
+    });
+  }
+})();
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

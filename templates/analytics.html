@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Analytics · Smart ABHA{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Analytics</h1><p class="sub">Overview of system data</p></div></div>
+<div class="stats">
+    <div class="stat-card"><div class="label">Maternal</div><div class="value">{{ stats.total_maternal }}</div></div>
+    <div class="stat-card"><div class="label">Child</div><div class="value">{{ stats.total_child }}</div></div>
+    <div class="stat-card"><div class="label">Check-ups</div><div class="value">{{ stats.total_checkups }}</div></div>
+    <div class="stat-card"><div class="label">Vaccinations</div><div class="value">{{ stats.total_vaccinations }}</div></div>
+    <div class="stat-card"><div class="label">Pending reminders</div><div class="value">{{ stats.total_reminders }}</div></div>
+    <div class="stat-card"><div class="label">At-risk mothers (age≥35)</div><div class="value">{{ at_risk_maternal }}</div></div>
+</div>
+<div class="card">
+    <div class="card-header">Recent growth measurements</div>
+    <div class="card-body">
+        {% if growth_data %}
+        <table><thead><tr><th>Date</th><th>Age (mo)</th><th>Weight</th><th>Height</th><th>Status</th></tr></thead>
+        <tbody>{% for m in growth_data %}<tr>
+            <td>{{ m.measurement_date.strftime('%b %d, %Y') if m.measurement_date else '—' }}</td>
+            <td>{{ m.age_months or '—' }}</td><td>{{ m.weight or '—' }}</td>
+            <td>{{ m.height or '—' }}</td><td>{{ m.weight_for_age or '—' }}</td>
+        </tr>{% endfor %}</tbody></table>
+        {% else %}<p style="color:var(--muted)">No growth data yet.</p>{% endif %}
+    </div>
+</div>
+{% endblock %}

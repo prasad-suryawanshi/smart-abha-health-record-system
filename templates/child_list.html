@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Child Records · Smart ABHA{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Child Records</h1><p class="sub">Growth, vaccination and health records</p></div>
+    <a href="{{ url_for('child_new') }}" class="btn btn-primary">+ New Record</a>
+</div>
+{% if records %}
+<div class="card">
+<table>
+<thead><tr><th>ABHA ID</th><th>Child</th><th>Gender</th><th>Date of Birth</th><th></th></tr></thead>
+<tbody>
+{% for r in records %}
+<tr>
+    <td>{{ r.abha_id }}</td>
+    <td>{{ r.child_name }}</td>
+    <td>{{ r.gender or '—' }}</td>
+    <td>{{ r.date_of_birth.strftime('%b %d, %Y') if r.date_of_birth else '—' }}</td>
+    <td><a href="{{ url_for('child_detail', id=r.id) }}" class="btn btn-outline btn-sm">View</a></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="empty">No child records yet.<br><a href="{{ url_for('child_new') }}" class="btn btn-primary btn-sm" style="margin-top:.7rem">Create first record</a></div>
+{% endif %}
+{% endblock %}

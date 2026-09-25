@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ record.child_name }} · Smart ABHA{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>{{ record.child_name }}</h1><p class="sub">{{ record.abha_id }} · {{ record.gender or '' }}</p></div>
+    <a href="{{ url_for('child_list') }}" class="btn btn-outline btn-sm">Back to list</a>
+</div>
+<div class="stats">
+    <div class="stat-card"><div class="label">Date of Birth</div><div class="value" style="font-size:1rem">{{ record.date_of_birth.strftime('%b %d, %Y') if record.date_of_birth else '—' }}</div></div>
+    <div class="stat-card"><div class="label">Vaccinations</div><div class="value">{{ vaccinations|length }}</div></div>
+    <div class="stat-card"><div class="label">Growth records</div><div class="value">{{ growth|length }}</div></div>
+    <div class="stat-card"><div class="label">Check-ups</div><div class="value">{{ checkups|length }}</div></div>
+</div>
+
+<div class="card" style="margin-bottom:1.25rem">
+    <div class="card-header">Vaccinations</div>
+    <div class="card-body">
+        {% if vaccinations %}
+        <table><thead><tr><th>Vaccine</th><th>Date</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>{% for v in vaccinations %}<tr>
+            <td>{{ v.vaccine_name }}</td>
+            <td>{{ v.administered_date.strftime('%b %d, %Y') if v.administered_date else '—' }}</td>
+            <td><span class="badge">{{ v.status or '—' }}</span></td>
+            <td>{{ v.notes or '—' }}</td>
+        </tr>{% endfor %}</tbody></table>
+        {% else %}<p style="color:var(--muted);font-size:.9rem">No vaccinations recorded.</p>{% endif %}
+        <hr style="margin:1.2rem 0;border:none;border-top:1px solid var(--border)">
+        <form method="POST" action="{{ url_for('child_add_vaccination', id=record.id) }}">
+            <div class="form-group"><label>Vaccine Name</label><input name="vaccine_name" class="form-control" required placeholder="BCG / OPV / ..."></div>
+            <div class="form-group"><label>Date</label><input type="date" name="administered_date" class="form-control" required></div>
+            <div class="form-group"><label>Status</label><select name="status" class="form-control"><option>Completed</option><option>Pending</option><option>Missed</option></select></div>
+            <div class="form-group"><label>Notes</label><input name="notes" class="form-control"></div>
+            <button type="submit" class="btn btn-primary btn-sm">Add Vaccination</button>
+        </form>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:1.25rem">
+    <div class="card-header">Growth Monitoring</div>
+    <div class="card-body">
+        {% if growth %}
+        <table><thead><tr><th>Date</th><th>Age (mo)</th><th>Weight</th><th>Height</th><th>Status</th></tr></thead>
+        <tbody>{% for g in growth %}<tr>
+            <td>{{ g.measurement_date.strftime('%b %d, %Y') if g.measurement_date else '—' }}</td>
+            <td>{{ g.age_months or '—' }}</td><td>{{ g.weight or '—' }} kg</td>
+            <td>{{ g.height or '—' }} cm</td><td>{{ g.weight_for_age or '—' }}</td>
+        </tr>{% endfor %}</tbody></table>
+        {% else %}<p style="color:var(--muted);font-size:.9rem">No growth records yet.</p>{% endif %}
+        <hr style="margin:1.2rem 0;border:none;border-top:1px solid var(--border)">
+        <form method="POST" action="{{ url_for('child_add_growth', id=record.id) }}">
+            <div class="form-group"><label>Date</label><input type="date" name="measurement_date" class="form-control" required></div>
+            <div class="form-group"><label>Age (months)</label><input type="number" name="age_months" class="form-control"></div>
+            <div class="form-group"><label>Weight (kg)</label><input type="number" step="0.1" name="weight" class="form-control"></div>
+            <div class="form-group"><label>Height (cm)</label><input type="number" step="0.1" name="height" class="form-control"></div>
+            <div class="form-group"><label>Weight for age</label><select name="weight_for_age" class="form-control"><option>Normal</option><option>Underweight</option><option>Overweight</option></select></div>
+            <button type="submit" class="btn btn-primary btn-sm">Add Growth Record</button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Check-ups</div>
+    <div class="card-body">
+        {% if checkups %}
+        <table><thead><tr><th>Date</th><th>Type</th><th>Findings</th></tr></thead>
+        <tbody>{% for c in checkups %}<tr>
+            <td>{{ c.checkup_date.strftime('%b %d, %Y') if c.checkup_date else '—' }}</td>
+            <td>{{ c.checkup_type or '—' }}</td><td>{{ c.findings or '—' }}</td>
+        </tr>{% endfor %}</tbody></table>
+        {% else %}<p style="color:var(--muted);font-size:.9rem">No check-ups yet.</p>{% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Smart ABHA{% endblock %}
+{% block extra_css %}
+<style>
+.section-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:1.6rem 0 .7rem}
+.reminder-list{display:flex;flex-direction:column;gap:.5rem}
+.reminder-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;background:#fff;border:1px solid var(--border);border-radius:12px;padding:.8rem 1.05rem;border-left:3px solid var(--primary)}
+.reminder-row.high{border-left-color:var(--danger)}.reminder-row.medium{border-left-color:var(--warning)}.reminder-row.low{border-left-color:var(--success)}
+.reminder-row .title{font-weight:600;font-size:.9rem}.reminder-row .meta{font-size:.78rem;color:var(--muted);margin-top:.12rem}
+.records-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.9rem}
+.record-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:1.05rem;box-shadow:var(--shadow)}
+.record-card .id{font-size:.7rem;color:var(--muted);font-weight:500;margin-bottom:.15rem}
+.record-card .name{font-size:.98rem;font-weight:600;margin-bottom:.45rem}
+.record-card .details{font-size:.82rem;color:var(--muted);line-height:1.5;margin-bottom:.7rem}
+.view-all{margin-top:.8rem;text-align:center}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Dashboard</h1><p class="sub">Welcome, {{ current_user.name }}</p></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <a href="{{ url_for('maternal_new') }}" class="btn btn-primary">+ Maternal</a>
+        <a href="{{ url_for('child_new') }}" class="btn btn-outline">+ Child</a>
+    </div>
+</div>
+<div class="stats">
+    <div class="stat-card"><div class="label">Maternal records</div><div class="value">{{ total_maternal }}</div></div>
+    <div class="stat-card"><div class="label">Child records</div><div class="value">{{ total_child }}</div></div>
+    <div class="stat-card"><div class="label">Overdue</div><div class="value">{{ overdue_reminders }}</div></div>
+    <div class="stat-card"><div class="label">Pending reminders</div><div class="value">{{ total_reminders }}</div></div>
+</div>
+
+<div class="section-label">Reminders</div>
+{% if reminders %}
+<div class="reminder-list">
+{% for r in reminders %}
+<div class="reminder-row {{ (r.priority or 'low')|lower }}">
+    <div><div class="title">{{ r.title }}</div>
+    <div class="meta">Due {{ r.due_date.strftime('%b %d, %Y') if r.due_date else '—' }}{% if r.description %} · {{ r.description }}{% endif %}</div></div>
+    <span class="badge">{{ r.priority or 'Normal' }}</span>
+</div>
+{% endfor %}
+</div>
+{% else %}<div class="empty">No pending reminders</div>{% endif %}
+
+<div class="section-label">Maternal records</div>
+{% if maternal_records %}
+<div class="records-grid">
+{% for rec in maternal_records %}
+<div class="record-card">
+    <div class="id">{{ rec.abha_id }}</div>
+    <div class="name">{{ rec.mother_name }}</div>
+    <div class="details">Age {{ rec.age or '—' }} yrs<br>{{ rec.pregnancy_status or 'Status N/A' }}{% if rec.weeks_of_pregnancy %} · {{ rec.weeks_of_pregnancy }} weeks{% endif %}</div>
+    <a href="{{ url_for('maternal_detail', id=rec.id) }}" class="btn btn-outline btn-sm">View</a>
+</div>
+{% endfor %}
+</div>
+<div class="view-all"><a href="{{ url_for('maternal_list') }}" class="btn btn-outline btn-sm">View all maternal records</a></div>
+{% else %}<div class="empty">No maternal records yet<br><a href="{{ url_for('maternal_new') }}" class="btn btn-primary btn-sm" style="margin-top:.7rem">Create first record</a></div>{% endif %}
+
+<div class="section-label">Child records</div>
+{% if child_records %}
+<div class="records-grid">
+{% for rec in child_records %}
+<div class="record-card">
+    <div class="id">{{ rec.abha_id }}</div>
+    <div class="name">{{ rec.child_name }}</div>
+    <div class="details">{% if rec.date_of_birth %}DOB {{ rec.date_of_birth.strftime('%b %d, %Y') }}<br>{% endif %}{{ rec.gender or '' }}</div>
+    <a href="{{ url_for('child_detail', id=rec.id) }}" class="btn btn-outline btn-sm">View</a>
+</div>
+{% endfor %}
+</div>
+<div class="view-all"><a href="{{ url_for('child_list') }}" class="btn btn-outline btn-sm">View all child records</a></div>
+{% else %}<div class="empty">No child records yet<br><a href="{{ url_for('child_new') }}" class="btn btn-primary btn-sm" style="margin-top:.7rem">Create first record</a></div>{% endif %}
+{% endblock %}

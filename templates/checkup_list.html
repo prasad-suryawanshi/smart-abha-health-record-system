@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Checkups · Smart ABHA{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Health Checkup Records</h1><p class="sub">All medical check-ups</p></div></div>
+{% if records %}
+<div class="card"><table>
+<thead><tr><th>Date</th><th>Type</th><th>Weight</th><th>BP</th><th>Findings</th></tr></thead>
+<tbody>{% for r in records %}<tr>
+<td>{{ r.checkup_date.strftime('%d %b %Y') if r.checkup_date else '—' }}</td>
+<td>{{ r.checkup_type or '—' }}</td>
+<td>{{ r.weight or '—' }}</td>
+<td>{{ r.blood_pressure or '—' }}</td>
+<td>{{ r.findings or '—' }}</td>
+</tr>{% endfor %}</tbody></table></div>
+{% else %}<div class="empty">No checkup records yet. Add checkups from mother or child detail pages.</div>{% endif %}
+{% endblock %}

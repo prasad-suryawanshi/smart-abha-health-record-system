@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Vaccinations · Smart ABHA{% endblock %}
+{% block content %}
+<div class="page-header"><div><h1>Vaccination Records</h1><p class="sub">View and manage child vaccinations</p></div>
+<a href="{{ url_for('child_list') }}" class="btn btn-outline btn-sm">Child Records</a></div>
+{% if records %}
+<div class="card"><table>
+<thead><tr><th>Vaccine</th><th>Date</th><th>Status</th><th>Notes</th></tr></thead>
+<tbody>{% for r in records %}<tr>
+<td>{{ r.vaccine_name }}</td>
+<td>{{ r.administered_date.strftime('%d %b %Y') if r.administered_date else '—' }}</td>
+<td><span class="badge">{{ r.status or '—' }}</span></td>
+<td>{{ r.notes or '—' }}</td>
+</tr>{% endfor %}</tbody></table></div>
+{% else %}<div class="empty">No vaccination records yet. Open a child record to add vaccines.</div>{% endif %}
+{% endblock %}
